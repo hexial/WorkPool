@@ -69,7 +69,7 @@ class Pool
 
     bool Idle()
     {
-		std::lock_guard<std::mutex> lock(this->mutex);
+        std::lock_guard<std::mutex> lock(this->mutex);
         return this->jobs.empty() && this->active == 0;
     }
 
@@ -88,17 +88,17 @@ class Pool
             {
                 auto job = std::move(this->jobs.top());
                 this->jobs.pop();
-				this->active++;
+                this->active++;
                 this->mutex.unlock();
                 job();
-				this->mutex.lock();
-				this->active--;
-				this->mutex.unlock();
+                this->mutex.lock();
+                this->active--;
+                this->mutex.unlock();
             }
         }
     }
 
-	size_t active = 0;
+    size_t active = 0;
     std::mutex mutex;
     bool stop = false;
     std::stack<std::function<void()>> jobs;
